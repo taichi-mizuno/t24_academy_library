@@ -1,5 +1,6 @@
 package jp.co.metateam.library.controller;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
@@ -33,14 +35,42 @@ public class BookController {
     }
 
     @GetMapping("/book/index")
-    public String index(Model model) {
+    public String index(@RequestParam(name = "sort", required = false, defaultValue = "title_asc") String sort, Model model) {
         // 書籍を全件取得
         List<BookMstDto> bookMstList = this.bookMstService.findAvailableWithStockCount();
-        
+    
+        // ソート条件に基づいてリストをソート
+        switch (sort) {
+            case "title_asc":
+                bookMstList.sort(Comparator.comparing(BookMstDto::getTitle, Comparator.nullsFirst(String::compareTo)));
+                break;
+            case "title_desc":
+                bookMstList.sort(Comparator.comparing(BookMstDto::getTitle, Comparator.nullsFirst(String::compareTo)).reversed());
+                break;
+            case "date_asc":
+                bookMstList.sort(Comparator.comparing(BookMstDto::getCreatedAt, Comparator.nullsFirst(Comparator.naturalOrder())));
+                break;
+            case "date_desc":
+                bookMstList.sort(Comparator.comparing(BookMstDto::getCreatedAt, Comparator.nullsFirst(Comparator.naturalOrder())).reversed());
+                break;
+            case "isbn_asc":
+                bookMstList.sort(Comparator.comparing(BookMstDto::getIsbn, Comparator.nullsFirst(String::compareTo)));
+                break;
+            case "isbn_desc":
+                bookMstList.sort(Comparator.comparing(BookMstDto::getIsbn, Comparator.nullsFirst(String::compareTo)).reversed());
+                break;
+            default:
+                // デフォルトのソート順（登録日時の昇順）
+                bookMstList.sort(Comparator.comparing(BookMstDto::getCreatedAt, Comparator.nullsFirst(Comparator.naturalOrder())));
+                break;
+        }
+    
         model.addAttribute("bookMstList", bookMstList);
-
+        
         return "book/index";
     }
+    
+    
 
     @GetMapping("/book/add")
     public String add(Model model) {

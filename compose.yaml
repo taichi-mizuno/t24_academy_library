@@ -9,6 +9,7 @@ services:
       - db-store:/var/lib/mysql
     ports:
       - 3306:3306
+    platform: linux/amd64
 
   # ストレージ
   metateam_academy_minio:
@@ -20,6 +21,7 @@ services:
       - "9000:9000"
       - "9001:9001"
     command: ['server', '/export', '--console-address', ':9001']
+    platform: linux/amd64
 
   # アプリ本体
   metateam_academy_app:
@@ -32,5 +34,6 @@ services:
     ports:
       - 8080:8080 # 通常実行用
       - 5005:5005 # デバッグ用
+    platform: linux/amd64
 volumes:
   db-store:

@@ -31,6 +31,10 @@ public class BookMst {
     @Column(name = "title", nullable = false)
     private String title;
 
+    /** 作成日時 */
+    @Column(name = "created_at", nullable = false)
+    private Timestamp createdAt; 
+
     /** 削除日時 */
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
@@ -52,6 +56,10 @@ public class BookMst {
         return this.title;
     }
 
+    public Timestamp getCreatedAt() {
+        return this.createdAt;
+    }
+
     public Timestamp getDeletedAt() {
         return this.deletedAt;
     }
@@ -68,6 +76,10 @@ public class BookMst {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
     public void setDeletedAt(Timestamp deletedAt) {

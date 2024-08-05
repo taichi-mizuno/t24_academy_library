@@ -14,9 +14,49 @@
                 <div class="page_title">書籍一覧</div>
                 <div class="page_contents">
                     <div class="inner_contens__operation">
+
+                        <label for="sort_select">↑↓並び替え:</label>
+                        <select name="sort" id="sort_select">
+                            <option value="">--項目を選択--</option>
+                            <option value="date_asc">登録日時の昇順</option>
+                            <option value="date_desc">登録日時の降順</option>
+                            <option value="title_asc">書籍名の昇順</option>
+                            <option value="title_desc">書籍名の降順</option>
+                            <option value="isbn_asc">ISBNの昇順</option>
+                            <option value="isbn_desc">ISBNの降順</option>
+                        </select>
+                        
+                        <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const sortSelect = document.getElementById('sort_select');
+                            const queryParams = new URLSearchParams(window.location.search);
+                            const currentSort = queryParams.get('sort');
+                        
+                            if (sortSelect && currentSort) {
+                                sortSelect.value = currentSort;
+                            }
+                        
+                            sortSelect.addEventListener('change', function() {
+                                const selectedValue = this.value;
+                                const currentUrl = window.location.href;
+                                const baseUrl = currentUrl.split('?')[0];
+                                
+                                if (selectedValue) {
+                                    queryParams.set('sort', selectedValue);
+                                } else {
+                                    queryParams.delete('sort');
+                                }
+                        
+                                const newUrl = baseUrl + '?' + queryParams.toString();
+                                window.location.href = newUrl;
+                            });
+                        });
+                        </script>
+                        
+                        
                         <a th:href="@{/book/add}" class="meta-operation-btn"><img src="../images/icons/add.png" alt="stock" />書籍登録</a>
                     </div>
-                    <table class="books_table" align="left">
+                    <table class="books_table" align ="left">
                         <tr>
                             <th>書籍名</th>
                             <th>ISBN</th>
